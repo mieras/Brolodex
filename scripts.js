@@ -245,11 +245,11 @@ function navigateToItem(direction) {
   const total = cards.length;
   let targetIndex;
   
-  // Omgedraaid: next = naar lagere scrollPos, prev = naar hogere scrollPos
+  // next = naar hogere index, prev = naar lagere index
   if (direction === 'next') {
-    targetIndex = (currentIndex - 1 + total) % total;
-  } else {
     targetIndex = (currentIndex + 1) % total;
+  } else {
+    targetIndex = (currentIndex - 1 + total) % total;
   }
   
   const target = targetIndex * SPACING;
