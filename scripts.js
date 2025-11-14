@@ -47,9 +47,10 @@ function makeContact(i){
 const contacts = Array.from({length:48},(_,i)=>makeContact(i));
 
 // Build cards
-contacts.forEach(c=>{
+contacts.forEach((c, index)=>{
   const el = document.createElement("div");
   el.className = "card";
+  el.setAttribute("data-letter", c.name[0].toUpperCase());
   el.innerHTML = `
     <div class="front">
       <h3>${c.name}</h3>
@@ -57,7 +58,24 @@ contacts.forEach(c=>{
     </div>
     <div class="back"></div>
   `;
-  el.addEventListener("click", () => openDetail(c));
+  el.addEventListener("click", () => {
+    // Check if this card is active
+    if (el.classList.contains('is-active')) {
+      // If active, open detail panel
+      openDetail(c);
+    } else {
+      // If not active, navigate to this card
+      const target = index * SPACING;
+      gsap.to(smooth, {
+        duration: 0.4,
+        val: target,
+        ease: "power2.out",
+        onUpdate: () => {
+          scrollPos = smooth.val;
+        }
+      });
+    }
+  });
   stage.appendChild(el);
 });
 
@@ -105,15 +123,40 @@ function render(){
   cards.forEach((card,i)=>{
     const offset=((i*SPACING+scrollPos)%(SPACING*total))-SPACING;
     const progress=offset/SPACING;
-    const rotX=progress*-MAX_TILT;
-    const depth=Math.cos(progress*Math.PI)*RADIUS;
+    
+    // Rotatie: positieve progress = kaartje klapt naar voren (vanaf bottom)
+    // Bij progress = 1 moet het -180deg zijn om de achterkant te zien
+    // Negatieve progress = kaartje komt van achteren
+    const rotX = progress > 0 ? -progress * 180 : progress * MAX_TILT;
+    
+    // Scale voor diepte effect: kaartjes achter zijn kleiner, actief is 1.0
+    let scale = 1;
+    if (progress < 0) {
+      // Achter = kleiner
+      scale = 1 + (progress / 4); // Van 1.0 naar 0.75
+    } else if (progress > 0) {
+      // Naar voren geklapt = iets groter
+      scale = 1 + (progress * 0); // Van 1.0 naar 1.2
+    }
+    
+    // Opacity: meer kaartjes zichtbaar (tot progress -4 of +2)
+    let opacity = 1;
+    if (progress < -4) opacity = 0;
+    else if (progress < 0) opacity = 1 + (progress / 4); // Fade out achteraan
+    else if (progress > 2) opacity = 0;
+    else if (progress > 0) opacity = 1 - (progress / 2); // Fade out vooraan
+    
+    // Z-index: kaartjes die naar voren klappen (positieve progress) = hoger
+    // Actief kaartje (progress ≈ 0) = hoogste
+    const zIndex = 200 + Math.round(progress * 30);
 
     gsap.set(card,{
-      y:offset,
-      rotationX:rotX,
-      z:depth,
-      opacity:1-Math.abs(progress)*0.6,
-      zIndex:100-Math.abs(progress)*100
+      x: 0, // Gecentreerd, geen horizontale verschuiving
+      y: offset * 0.5, // Verticale spacing
+      rotationX: rotX,
+      scale: scale,
+      opacity: opacity,
+      zIndex: zIndex
     });
 
     card.classList.toggle("is-active",Math.abs(progress)<0.15);
@@ -202,10 +245,11 @@ function navigateToItem(direction) {
   const total = cards.length;
   let targetIndex;
   
+  // Omgedraaid: next = naar lagere scrollPos, prev = naar hogere scrollPos
   if (direction === 'next') {
-    targetIndex = (currentIndex + 1) % total;
-  } else {
     targetIndex = (currentIndex - 1 + total) % total;
+  } else {
+    targetIndex = (currentIndex + 1) % total;
   }
   
   const target = targetIndex * SPACING;
