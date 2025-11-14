@@ -1,0 +1,122 @@
+:root {
+  --bg:#2b1c13;
+  --panel-bg:white;
+
+  /* flex widths tweaked by JS */
+  --rolodex-w: 100%;
+  --detail-w: 0%;
+}
+
+html,body { margin:0; height:100%; background:var(--bg); font-family:system-ui; }
+
+.layout {
+  display:flex;
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+  transition:
+    --rolodex-w .45s cubic-bezier(.22,.61,.36,1),
+    --detail-w .45s cubic-bezier(.22,.61,.36,1);
+}
+
+/* LEFT SIDE */
+.rolodex-wrap {
+  width:var(--rolodex-w);
+  position:relative;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  transition: width .45s cubic-bezier(.22,.61,.36,1);
+}
+
+.stage {
+  width:440px;
+  height:340px;
+  border-radius:12px;
+  background:linear-gradient(180deg,#5b4432,#3a2c23);
+  perspective:1100px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* A-Z */
+.az-scrub {
+  position:absolute;
+  right:1rem;
+  top:50%;
+  transform: translateY(-50%);
+  background:rgba(0,0,0,.5);
+  border-radius:8px;
+  padding:4px;
+}
+.az-scrub ul {
+  margin:0;
+  padding:0;
+  list-style:none;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+}
+.az-scrub li {
+  padding:4px 6px;
+  color:white;
+  font-size:.75rem;
+  border-radius:4px;
+  cursor:pointer;
+}
+.az-scrub li:hover { background:white; color:black; }
+
+/* Cards */
+.card {
+  position:absolute;
+  width:300px; height:180px;
+  left:70px; top:70px;
+  border-radius:10px;
+  transform-style:preserve-3d;
+  transform-origin:center bottom;
+  cursor:pointer;
+  box-shadow:0 10px 20px rgba(0,0,0,.3);
+}
+
+.front, .back {
+  position:absolute;
+  inset:0;
+  padding:1rem;
+  border-radius:10px;
+  backface-visibility:hidden;
+  border:1px solid #cdbb9e;
+}
+
+.front { background:#f6f0e6; }
+.back  { background:#e7dac9; transform:rotateX(180deg); }
+
+/* RIGHT PANEL */
+.detail {
+  width:var(--detail-w);
+  background:var(--panel-bg);
+  border-left:1px solid #ddd;
+  overflow-y:auto;
+  transition: width .45s cubic-bezier(.22,.61,.36,1);
+  opacity:0;
+  transform:translateX(20px);
+}
+.layout.panel-open .detail {
+  opacity:1;
+  transform:translateX(0);
+  transition:
+    width .45s cubic-bezier(.22,.61,.36,1),
+    opacity .35s ease,
+    transform .35s ease;
+}
+
+.close {
+  position:absolute;
+  right:1rem;
+  top:1rem;
+  border:1px solid #ddd;
+  background:#f7f7f7;
+  width:32px;
+  height:32px;
+  border-radius:6px;
+  cursor:pointer;
+}

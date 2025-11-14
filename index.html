@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brolodex</title>
+  <link rel="stylesheet" href="default.css">
+</head>
+<body>
+  <div class="layout" id="layout">
+
+    <!-- LEFT: Rolodex + A-Z -->
+    <section class="rolodex-wrap" id="rolodexWrap">
+      <div class="stage" id="stage"></div>
+
+      <nav class="az-scrub" id="azScrub">
+        <ul>
+          <li>A</li><li>B</li><li>C</li><li>D</li><li>E</li><li>F</li><li>G</li><li>H</li>
+          <li>I</li><li>J</li><li>K</li><li>L</li><li>M</li><li>O</li><li>P</li>
+          <li>Q</li><li>R</li><li>S</li><li>T</li><li>U</li><li>V</li><li>W</li>
+          <li>X</li><li>Y</li><li>Z</li>
+        </ul>
+      </nav>
+    </section>
+
+    <!-- RIGHT: Panel -->
+    <aside class="detail" id="detail">
+      <button id="closeBtn" class="close">×</button>
+
+      <div class="content">
+        <h2 id="dName">—</h2>
+        <p id="dRole">—</p>
+        <p class="meta"><span id="dCity">—</span> • <a id="dEmail">—</a></p>
+
+        <section class="block">
+          <h3>Timeline</h3>
+          <ul id="timelineList"></ul>
+        </section>
+
+        <section class="block">
+          <h3>Updates</h3>
+          <ul id="updatesList"></ul>
+        </section>
+      </div>
+    </aside>
+
+  </div>
+
+  <script src="https://unpkg.com/gsap@3/dist/gsap.min.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
